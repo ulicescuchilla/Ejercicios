@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    participant R as Repartidor (App Móvil)
+    participant E as Sistema ERP (SAP)
+    participant C as Cuentas por Cobrar
+    participant L as Logística/Bodega
+    Note over R, L: Fase 1: Inicio y Validación
+    R->>E: Ingresar Número de Factura
+    E->>E: Consulta Base de Datos
+    alt Datos Correctos
+        E-->>R: Confirmación de Datos
+        R->>R: Seleccionar Productos y Cantidades
+        R->>R: Motivo Reingreso
+        R->>E: Enviar Gestión de Reingreso
+        E-->>R: Error / Solicitar Reingreso
+        R->>R: Corregir y reintentar
+    end
+
+    Note over R, L: Fase 2: Procesamiento y Alertas
+    E->>E: Generar Número de Gestión Único
+    E->>C: Notificación (Pre-registro NC)
+    E->>L: Notificación (Preparar Recepción)
+    Note over R, L: Fase 3: Ejecución Física
+    R->>L: Llegada al Centro de Distribución
+    R->>L: Entrega de Producto Físico
+    Note over R, L: Fase 4: Cierre y Documentación
+    L->>E: Confirmar Recepción (Cruce Digital vs Físico)
+    E->>C: Validación Contable Final
+    E->>E: Emitir Nota de Crédito (NC)
+    E->>E: Generar Comprobante PDF
+    E->>R: Firma Digital / Recibo
+    R->>R: Fin del Proceso
+    
